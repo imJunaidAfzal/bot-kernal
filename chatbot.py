@@ -54,7 +54,7 @@ class ChatBot:
                 system_prompt,
                 {
                 "role": "user",
-                "content": prompt
+                "content": f"User query: {prompt}\nSQL query:"
                 }
             ],
             temperature=0.7,
@@ -82,14 +82,17 @@ class ChatBot:
         list:
             The result of the SQL query.
         """
-        conn = sqlite3.connect(self.db_name)
-        cursor = conn.cursor()
+        try:
+            conn = sqlite3.connect(self.db_name)
+            cursor = conn.cursor()
 
-        cursor.execute(sql)
-        response = cursor.fetchall()
+            cursor.execute(sql)
+            response = cursor.fetchall()
 
-        conn.close()
-        return response
+            conn.close()
+            return response
+        except Exception as exp:
+            return "Please try with other query."
 
 
 class ChatAgent:
@@ -120,3 +123,30 @@ class ChatAgent:
         sql = self.chatbot.generate_sql(user_query)
         response = self.chatbot.execute_sql(sql)
         return response
+
+def response_format(prompt):
+    """
+    Generate a response based on the query and raw response.
+
+    Parameters
+    ----------
+    prompt (str):
+        Prompt with query and raw answer.
+
+    Returns
+    -------
+    str:
+        The generated response.
+    """
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You're response builder. Generate the response for the user based on the query and raw answer."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7,
+        max_tokens=256,
+        top_p=1,
+    )
+    response = response.choices[0].message.content
+    return response

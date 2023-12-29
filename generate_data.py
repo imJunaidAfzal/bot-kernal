@@ -2,7 +2,7 @@
 
 import sqlite3
 import random
-
+import pandas as pd
 
 class DataGenerator:
     """
@@ -22,9 +22,8 @@ class DataGenerator:
         creates a table named 'trades' with columns 'id', 'symbol', 'quantity', and 'price',
         and commits the changes.
 
-        If the table already exists, this method does nothing.
-
-        Returns:
+        Returns
+        -------
         None
         """
         conn = sqlite3.connect(self.db_name)
@@ -48,10 +47,13 @@ class DataGenerator:
 
         This method generates a specified number of random trade records.
 
-        Parameters:
-        - num_records (int): The number of trade records to generate and insert.
+        Parameters
+        ----------
+        num_records (int):
+            The number of trade records to generate and insert.
 
-        Returns:
+        Returns
+        -------
         None
         """
         symbols = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA']
@@ -124,11 +126,25 @@ class DataGenerator:
         conn.close()
         return schema
 
-# generator = DataGenerator()
-# generator.create_table()
-# generator.generate_records(10)
-# # generator.show_all_records()
+    def get_data_as_dataframe(self):
+        """
+        Retrieve all data from the 'trades' table as a Pandas DataFrame.
 
-# schema = generator.get_table_schema()
-# print("Table Schema for 'trades':")
-# print(schema)
+        Returns
+        -------
+        pandas.DataFrame:
+            A Pandas DataFrame containing the retrieved data.
+        """
+
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+
+        query = "SELECT * FROM trades;"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        columns = [desc[0] for desc in cursor.description]
+        df = pd.DataFrame(rows, columns=columns)
+
+        conn.close()
+
+        return df
