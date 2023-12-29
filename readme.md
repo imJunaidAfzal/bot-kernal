@@ -13,34 +13,35 @@ This is a simple chatbot that can generate SQL queries from natural language pro
 
 ### Setup
 
-1. Clone this repo
+1. **Clone this repo**
     ```bash
     git clone https://github.com/imJunaidAfzal/bot-kernal.git
     ```
-2. Install dependencies
+2. **Move to project directory**
+
+    ```bash
+    cd bot-kernal
+    ```
+3. **Install dependencies**
 
    ```bash
    pip install -r requirements.txt
    ```
 
-3. Set OpenAI API key
+4. **Set OpenAI API key**
 
    - Create a `.env` file in project root with your OpenAI key as `API_KEY`.
 
-4. Run script to populate sample data
-
-   ```bash
-   python generate_data.py
-   ```
-
-5. Start UI
+5. **Start UI**
 
    ```bash
    python ui_demo.py
    ```
 
-### Development
+### **Development**
 
 - `chatbot.py` - Main chatbot logic
 - `generate_data.py` - Script to generate sample data
 - `ui_demo.py` - Gradio UI 
+
+**This project is developed and tested with Python 3.11**
